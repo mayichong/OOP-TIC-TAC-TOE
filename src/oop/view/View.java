@@ -13,8 +13,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import oop.controller.TTTControllerImpl;
-import java.util.InputMismatchException;
 
+import java.nio.file.Paths;
+import java.util.InputMismatchException;
+import javafx.scene.media.*;
 public class View {
 	int timerVal;
 	TTTControllerImpl controller = new TTTControllerImpl();
@@ -196,7 +198,9 @@ public class View {
         		 
         		 if (checkValid(playerInputVal) == 1) {
         			 if (controller.checkFullOrNot() == true){
-        				
+        				Media media = new Media(Paths.get("src/drawSound.Wav").toUri().toString());
+    	  				MediaPlayer mediaPlayer = new MediaPlayer(media);
+    	  				mediaPlayer.play();
    		  				gridPane.add(display, 0, 1);	
    		  				gridPane.add(draw, 0, 10);
    		  				gridPane.add(playAgain, 0, 11);
@@ -207,6 +211,9 @@ public class View {
                     	 gridPane.getChildren().clear();
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
+    	  				 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
+    	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
+    	  				 mediaPlayer.play();
     	  				 gridPane.add(playAgain, 0, 11);
     	  				 isOver = true;
     	  				 startGameComputer("1","2","3");
@@ -221,7 +228,9 @@ public class View {
       		  			 gridPane.add(display, 0, 1); 
       		  			 
       		  			 if (controller.determineWinner()==2) {
-      		  				 
+      		  			Media media = new Media(Paths.get("src/loseSound.Wav").toUri().toString());
+       	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
+       	  				 mediaPlayer.play();
       		  				 gridPane.add(winC, 0, 11);
       		  				 gridPane.add(playAgain, 0, 12);
       		  				 isOver = true;
@@ -250,7 +259,9 @@ public class View {
         		  
         		 if (checkValid(playerInputVal) == 1) {
         			 if (controller.checkFullOrNot() == true){
-         				
+        				 Media media = new Media(Paths.get("src/drawSound.Wav").toUri().toString());
+     	  				MediaPlayer mediaPlayer = new MediaPlayer(media);
+     	  				mediaPlayer.play();
     		  				gridPane.add(display, 0, 1);	
     		  				gridPane.add(draw, 0, 10);
     		  				gridPane.add(playAgain, 0, 11);
@@ -259,6 +270,9 @@ public class View {
                           
                       }else if (controller.determineWinner() == 1) {
                     	 gridPane.getChildren().clear();
+                    	 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
+    	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
+    	  				mediaPlayer.play();
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
     	  				 gridPane.add(playAgain, 0, 11);
@@ -294,9 +308,12 @@ public class View {
         		 if (checkValid2(playerInputVal) == 1) {
         			 System.out.println(markerTest);
                      if (controller.determineWinner() == 2) {
+                    	 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
+    	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
+    	  				mediaPlayer.play();
                     	 gridPane.getChildren().clear();
                     	 gridPane.add(display, 0, 1);
-    	  				 gridPane.add(win1, 0, 10);
+    	  				 gridPane.add(win2, 0, 10);
     	  				 gridPane.add(playAgain, 0, 11);
     	  				 firstTime = false;
     	  				 isOver = true;
@@ -413,8 +430,8 @@ public class View {
         	gridPane.add(player1MarkerField,1,5);
         	gridPane.add(timerText,0,7);
         	gridPane.add(timer,1,7);
-        	gridPane.add(afterName,0,8);
-        	gridPane.add(goBack, 1, 8);
+        	gridPane.add(afterName,1,8);
+        	gridPane.add(goBack, 0, 8);
         	
 		}else {
 			playerNum = "2";
@@ -423,13 +440,14 @@ public class View {
         	gridPane.add(username,0,6);
         	gridPane.add(inputName2,0,7);
         	gridPane.add(player2,0,8);
-        	gridPane.add(afterName, 0,11);  
+        	gridPane.add(afterName, 1,11);  
         	gridPane.add(player1Marker,1,5);
         	gridPane.add(player1MarkerField,1,6);
         	gridPane.add(player2Marker,1,7);
         	gridPane.add(player2MarkerField,1,8);
         	gridPane.add(timer, 0, 10);
 			gridPane.add(timerText, 0, 9);
+			gridPane.add(goBack, 0, 11);
 		}
 		root.setCenter(gridPane);
 	}
