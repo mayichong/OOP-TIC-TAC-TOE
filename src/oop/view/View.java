@@ -13,8 +13,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import oop.controller.TTTControllerImpl;
+import java.util.InputMismatchException;
+
 public class View {
-	
+	int timerVal;
 	TTTControllerImpl controller = new TTTControllerImpl();
 	boolean firstTime = true;
 	boolean isOver = false;
@@ -62,11 +64,13 @@ public class View {
 	    Text player2Input = new Text("Please enter the row number and column number with a space in between (for example: X X):");
 	    Text insertSuccess = new Text("Insert successfully!");
 	    Text error = new Text("location unavailable. Please try again!");
+	    Text markerError = new Text("Invalid input. Please enter again!");
 	    Text win1 = new Text("Player1 Won!");
 	    Text winC = new Text("Computer Won!");
 	    Text win2 = new Text("Player2 Won!");
 	    Text draw = new Text("It is a draw!");
 	    Text display = new Text(controller.getGameDisplay());
+	    Text timeoutError = new Text("Timeout invalid. Please try again!");
 	    TextField defaultVal = new TextField();
         TextField username = new TextField();
         TextField player2 = new TextField();
@@ -77,14 +81,15 @@ public class View {
         TextField player2InputLocation = new TextField();
         
         Button button2 = new Button("Initialize Array");
-        Button button1 = new Button("Submit"); 
+        Button button1 = new Button("Continue"); 
         Button quit = new Button("Quit");
-        Button afterName = new Button("Submit");
+        Button afterName = new Button("Play");
         Button afterMarker = new Button("Submit");
         Button afterLocation = new Button("Submit");
         Button playAgain = new Button("Play again");
         Button afterPlayer1 = new Button("Submit");
         Button afterPlayer2 = new Button("Submit");
+        Button goBack = new Button("Go Back");
 	public GridPane buildSetupPane() {
 
         EventHandler<MouseEvent> quitHandler = new EventHandler<MouseEvent>() {
@@ -127,13 +132,55 @@ public class View {
              } 
           };
            
+          EventHandler<MouseEvent> goBackHandler = new EventHandler<MouseEvent>() { 
+              @Override 
+              public void handle(MouseEvent e) {
+             	 
+             	beginning();
+              } 
+           };
+           
          EventHandler<MouseEvent> submitInfo = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
+        		 gridPane.getChildren().remove(markerError);
+        		 gridPane.getChildren().remove(timeoutError);
+        		 
         		 if (playerNum.equals("1")) {
-        			 startGameComputer(username.getText(),player1MarkerField.getText(),timer.getText());
+        			 if (player1MarkerField.getText().length() == 1 && player1MarkerField.getText().isEmpty() == false && timer.getText().isEmpty() == false && username.getText().isEmpty() == false) {
+        				 
+        				 try{
+                             int timerVal = Integer.parseInt(timer.getText());
+                             
+                         }catch (NumberFormatException e1){
+                        	 
+                             gridPane.add(timeoutError, 0, 10);
+                         }
+        				 startGameComputer(username.getText(),player1MarkerField.getText(),timer.getText());
+        			 }else {
+        				 gridPane.add(markerError, 0, 10);
+        				 playAgainst("1"); 
+        			 }
+ 
+        			 
         		 }else if (playerNum.equals("2")){
-        			 startGamePlayer(username.getText(), player2.getText(), player1MarkerField.getText(), player2MarkerField.getText(), timer.getText());
+        			 
+        			 	if (player2MarkerField.getText().length() == 1 && player1MarkerField.getText().length() == 1 && player1MarkerField.getText().isEmpty() == false && player2MarkerField.getText().isEmpty() == false && timer.getText().isEmpty() == false && username.getText().isEmpty() == false && player2.getText().isEmpty() == false) {
+        				 
+        				 try{
+                             timerVal = Integer.parseInt(timer.getText());
+                             
+                         }catch (NumberFormatException e1){
+                        	 
+                             gridPane.add(timeoutError, 0, 10);
+                         }
+        				 startGamePlayer(username.getText(), player2.getText(), player1MarkerField.getText(), player2MarkerField.getText(), timer.getText());
+        			 }else {
+        				 gridPane.add(markerError, 0, 10);
+        				 playAgainst("2"); 
+        			 }
+
+        			 
         		 }         		 
        	 }
          };
@@ -146,7 +193,7 @@ public class View {
         		 gridPane.getChildren().remove(error);
         		 
         		 playerInputVal = player1InputLocation.getText();
-        		  
+        		 
         		 if (checkValid(playerInputVal) == 1) {
         			 if (controller.checkFullOrNot() == true){
         				
@@ -180,17 +227,13 @@ public class View {
       		  				 isOver = true;
       		  				 startGameComputer("1","2","3");
       		  			  }
-      		  			 
-      		  			
+	
       	  			}
                      
         		 }else {
         			 gridPane.add(display, 0, 1);
         			 gridPane.add(error,0,20);
         		 }
-        		 
-        		 
-
         		 player1InputLocation.clear();
                  
         	 }
@@ -206,7 +249,15 @@ public class View {
         		 playerInputVal = player1InputLocation.getText();
         		  
         		 if (checkValid(playerInputVal) == 1) {
-                     if (controller.determineWinner() == 1) {
+        			 if (controller.checkFullOrNot() == true){
+         				
+    		  				gridPane.add(display, 0, 1);	
+    		  				gridPane.add(draw, 0, 10);
+    		  				gridPane.add(playAgain, 0, 11);
+    		  				isOver = true;
+    		  				startGameComputer("1","2","3");
+                          
+                      }else if (controller.determineWinner() == 1) {
                     	 gridPane.getChildren().clear();
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
@@ -270,12 +321,14 @@ public class View {
          
          
          
+         
        afterName.addEventFilter(MouseEvent.MOUSE_CLICKED, submitInfo);
        quit.addEventFilter(MouseEvent.MOUSE_CLICKED,quitHandler);
        afterLocation.addEventFilter(MouseEvent.MOUSE_CLICKED, submitLocation);
        playAgain.addEventFilter(MouseEvent.MOUSE_CLICKED, playAgainHandler);
        afterPlayer1.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum1);
        afterPlayer2.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum2);
+       goBack.addEventFilter(MouseEvent.MOUSE_CLICKED, goBackHandler);
         //afterMarker.addEventFilter(MouseEvent.MOUSE_CLICKED, );
 
         return gridPane;
@@ -361,6 +414,7 @@ public class View {
         	gridPane.add(timerText,0,7);
         	gridPane.add(timer,1,7);
         	gridPane.add(afterName,0,8);
+        	gridPane.add(goBack, 1, 8);
         	
 		}else {
 			playerNum = "2";
@@ -383,24 +437,53 @@ public class View {
 
 	
 	public int checkValid(String location) {
-		 
+		
 		splited = playerInputVal.split("\\s+");
+		
+		if (splited.length == 2) {
+		
+			
+			try{
+                int firstVal = Integer.parseInt(splited[0]);
+                int secondVal = Integer.parseInt(splited[1]);
+                
+            
+			
+			
 			if (controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),1) == true){
 				
-	  			  controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),1);
+				controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),1);
 	  			  display = new Text(controller.getGameDisplay());
 	  			 return 1;
+				
+	  			
 	  		  }else {
 	  			display = new Text(controller.getGameDisplay());
 	  			return 0;
 	  			  
 	  		  }	
+			}catch (NumberFormatException e1){
+           	 	System.out.println("@");
+                return 0;
+            }
+			
+		}else
+			return 0;
+			
 	}
 	
 	public int checkValid2(String location) {
 		
 		GridPane gridPane = new GridPane();  
 		splited = playerInputVal.split("\\s+");
+		
+		if (splited.length == 2) {
+			
+		
+			try{
+                int firstVal = Integer.parseInt(splited[0]);
+                int secondVal = Integer.parseInt(splited[1]);
+                
 			if (controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),2) == true){
 				  gridPane.add(insertSuccess, 0, 0);
 	  			  controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),2);
@@ -412,7 +495,13 @@ public class View {
 	  			display = new Text(controller.getGameDisplay());
 	  			return 0;
 	  			  
-	  		  }	
+	  		  }
+			}catch (NumberFormatException e1){
+           	 	
+                return 0;
+            }
+		}else
+			return 0;
 	}
 	
 	public void startGameComputer(String username, String marker, String timer) {
@@ -475,7 +564,5 @@ public class View {
 		gridPane.add(player2InputLocation, 0, 8);
 		gridPane.add(afterPlayer2, 0, 12);
 		this.root.setCenter(gridPane);
-		
 	}
-
 }
