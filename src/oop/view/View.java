@@ -1,5 +1,7 @@
 package oop.view;
-
+import java.io.*;
+import java.util.HashMap;
+import javafx.scene.text.Font;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -13,12 +15,20 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import oop.controller.TTTControllerImpl;
-
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import javafx.scene.media.*;
 public class View {
+	boolean markerInputFormat = true;
 	int timerVal;
+	int x;
 	TTTControllerImpl controller = new TTTControllerImpl();
 	boolean firstTime = true;
 	boolean isOver = false;
@@ -67,6 +77,9 @@ public class View {
 	    Text insertSuccess = new Text("Insert successfully!");
 	    Text error = new Text("location unavailable. Please try again!");
 	    Text markerError = new Text("Invalid input. Please enter again!");
+	    
+	    
+	    
 	    Text win1 = new Text("Player1 Won!");
 	    Text winC = new Text("Computer Won!");
 	    Text win2 = new Text("Player2 Won!");
@@ -81,7 +94,9 @@ public class View {
         TextField timer = new TextField();
         TextField player1InputLocation = new TextField();
         TextField player2InputLocation = new TextField();
-        
+        Button GameRecord = new Button ("Records");
+        Button markerInputButton = new Button ("Input");
+        Button emojiClick = new Button("emoji");
         Button button2 = new Button("Initialize Array");
         Button button1 = new Button("Continue"); 
         Button quit = new Button("Quit");
@@ -93,10 +108,11 @@ public class View {
         Button afterPlayer2 = new Button("Submit");
         Button goBack = new Button("Go Back");
 	public GridPane buildSetupPane() {
-
+		
         EventHandler<MouseEvent> quitHandler = new EventHandler<MouseEvent>() {
         	@Override 
         	public void handle(MouseEvent e) { 
+        		controller.serialize();
                 System.exit(0);
             } 
         }; 
@@ -113,14 +129,14 @@ public class View {
         //Setting the vertical and horizontal gaps between the columns 
         gridPane.setVgap(5); 
         gridPane.setHgap(5);       
-
+        controller.getPlayerInfo();
         beginning();
         gridPane.add(display, 0, 1);
         
          EventHandler<MouseEvent> playAgainHandler = new EventHandler<MouseEvent>() { 
-             @Override 
+             @Override
              public void handle(MouseEvent e) {
-            	 
+            	
             	gridPane.getChildren().remove(display);
             	gridPane.getChildren().remove(win1);
             	gridPane.getChildren().remove(playAgain);
@@ -204,17 +220,23 @@ public class View {
    		  				gridPane.add(display, 0, 1);	
    		  				gridPane.add(draw, 0, 10);
    		  				gridPane.add(playAgain, 0, 11);
+   		  				gridPane.add(quit, 1, 11);
    		  				isOver = true;
    		  				startGameComputer("1","2","3");
                          
                      }else if (controller.determineWinner() == 1) {
                     	 gridPane.getChildren().clear();
+                    	 controller.addWin();
+    	  				 
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
+    	  				
     	  				 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
     	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
     	  				 mediaPlayer.play();
+    	  				 controller.storePlayerInfo();
     	  				 gridPane.add(playAgain, 0, 11);
+    	  				 gridPane.add(quit, 0, 12);
     	  				 isOver = true;
     	  				 startGameComputer("1","2","3");
     	  			 }else if (controller.determineWinner() != 1) {
@@ -328,16 +350,11 @@ public class View {
         			 gridPane.add(display, 0, 1);
         			 gridPane.add(error,0,20);
         		 }
-        		 
-        		 
 
         		 player2InputLocation.clear();
                  
         	 }
          };
-         
-         
-         
          
        afterName.addEventFilter(MouseEvent.MOUSE_CLICKED, submitInfo);
        quit.addEventFilter(MouseEvent.MOUSE_CLICKED,quitHandler);
@@ -346,7 +363,7 @@ public class View {
        afterPlayer1.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum1);
        afterPlayer2.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum2);
        goBack.addEventFilter(MouseEvent.MOUSE_CLICKED, goBackHandler);
-        //afterMarker.addEventFilter(MouseEvent.MOUSE_CLICKED, );
+       
 
         return gridPane;
 	}
@@ -390,7 +407,7 @@ public class View {
         gridPane.add(button1, 0, 12);
         gridPane.add(quit,3,4);
         gridPane.add(line, 0, 2, 3, 1); 
-        
+        gridPane.add(GameRecord, 0, 15);
         EventHandler<MouseEvent> submitGameType = new EventHandler<MouseEvent>() { 
             @Override 
             public void handle(MouseEvent e) {
@@ -432,7 +449,32 @@ public class View {
         	gridPane.add(timer,1,7);
         	gridPane.add(afterName,1,8);
         	gridPane.add(goBack, 0, 8);
+        	gridPane.add(emojiClick, 2, 5);
         	
+        	EventHandler<MouseEvent> emoji = new EventHandler<MouseEvent>() {
+    			@Override 
+            	public void handle(MouseEvent e) {
+    			markerInputFormat = false;
+    			gridPane.getChildren().remove(emojiClick);
+                gridPane.getChildren().remove(player1MarkerField);
+                gridPane.add(markerInputButton,2,5);
+ 
+                	
+                	
+                	
+                } 
+    		};
+    		EventHandler<MouseEvent> inputButton = new EventHandler<MouseEvent>() {
+    			@Override 
+            	public void handle(MouseEvent e) { 
+    			gridPane.add(player1MarkerField, 1, 5);
+                gridPane.getChildren().remove(emojiClick);
+                gridPane.add(emojiClick,2,5);
+                } 
+    		};
+    		
+    		emojiClick.addEventFilter(MouseEvent.MOUSE_CLICKED,emoji);
+    		markerInputButton.addEventFilter(MouseEvent.MOUSE_CLICKED, inputButton);
 		}else {
 			playerNum = "2";
 			gridPane.add(sign,0,4);
@@ -524,7 +566,8 @@ public class View {
 	
 	public void startGameComputer(String username, String marker, String timer) {
 		GridPane gridPane = new GridPane();
-				
+		
+		
 		if (firstTime == true) {
 			controller.startNewGame(1, Integer.parseInt(timer));
 			}
@@ -541,6 +584,7 @@ public class View {
 			gridPane.add(player1InputLocation, 0, 8);
 			gridPane.add(afterLocation, 0, 12);
 			this.root.setCenter(gridPane);
+			
 			
 			if (isOver == true) {
 				gridPane.getChildren().clear();

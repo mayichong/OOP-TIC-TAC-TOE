@@ -1,10 +1,21 @@
 package oop.controller;
+import java.util.ArrayList;
+
 import oop.others.GameBoard;
 import oop.others.UserPlayer;
 import oop.others.SecondPlayer;
-
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Iterator;
+import java.util.Set;
 public class TTTControllerImpl {
-
+	UserPlayer myself;
+	UserPlayer other;
+	HashMap<String,UserPlayer> hmap = new HashMap<String,UserPlayer>();
+	
+    //Adding elements to HashMap
+	
     String globalMarker = "1";
     String compMarker = "C";
     GameBoard board = new GameBoard(3,3,"0");
@@ -39,19 +50,16 @@ public class TTTControllerImpl {
 
         if (playerNum == 1){
             //create user player
-            UserPlayer myself = new UserPlayer(username,marker);
+            myself = new UserPlayer(username,marker);
             globalMarker = myself.markerChoice(username,marker);
 
         }else if (playerNum == 2){
             //create second player
-            UserPlayer myself = new UserPlayer(username,marker);
-            UserPlayer other = new UserPlayer(username,marker);
+            myself = new UserPlayer(username,marker);
+            other = new UserPlayer(username,marker);
             compMarker = other.markerChoice(username,marker);
 
-
-
         }
-
     }
 
     /**
@@ -128,5 +136,63 @@ public class TTTControllerImpl {
 
     public boolean checkFullOrNot(){
         return board.checkFull();
+    }
+    
+    public void storePlayerInfo() {
+        //Adding elements to HashMap
+    	hmap.put(myself.getUserName(),myself);
+    }
+    
+    public void serialize() {
+    	try
+        {
+               FileOutputStream fos = new FileOutputStream("hashmap.ser");
+               ObjectOutputStream oos = new ObjectOutputStream(fos);
+               oos.writeObject(hmap);
+               oos.close();
+               fos.close();
+               System.out.printf("Serialized HashMap data is saved in hashmap.ser");
+        }catch(IOException ioe)
+         {
+               ioe.printStackTrace();
+         }
+    }
+    public void getPlayerInfo() {
+        try
+        {
+           FileInputStream fis = new FileInputStream("hashmap.ser");
+           ObjectInputStream ois = new ObjectInputStream(fis);
+           //读取数据
+           hmap = (HashMap)ois.readObject();
+           
+           ois.close();
+           fis.close();
+        }catch(IOException ioe)
+        {
+           ioe.printStackTrace();
+           return;
+        }catch(ClassNotFoundException c)
+        {
+           System.out.println("Class not found");
+           c.printStackTrace();
+           return;
+        }
+        System.out.println("Deserialized HashMap..");
+        // Display content using Iterator
+        Set set = hmap.entrySet();
+        Iterator iterator = set.iterator();
+        while(iterator.hasNext()) {
+           Map.Entry mentry = (Map.Entry)iterator.next();
+           System.out.print("key: "+ mentry.getKey() + " & Value: ");
+           System.out.println(((UserPlayer)mentry.getValue()).getMarker());
+        }
+    }
+    
+    public void addWin() {
+    	myself.addWin();
+    }
+    
+    public void addLose() {
+    	myself.addLose();
     }
 }
