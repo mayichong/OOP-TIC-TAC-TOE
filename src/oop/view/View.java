@@ -430,7 +430,7 @@ public class View {
             	Text dataSet = new Text(controller.dataPass());
             	gridPane.add(dataSet, 0, 1);
             	dataSet.getStyleClass().add("dataset");
-            	gridPane.add(goBack, 0, 11);
+            	gridPane.add(goBack, 0, 3);
             	}
          };
          
@@ -501,6 +501,7 @@ public class View {
     		markerInputButton.addEventFilter(MouseEvent.MOUSE_CLICKED, inputButton);
 		}else {
 			playerNum = "2";
+			gridPane.getChildren().remove(emojiClick);
 			gridPane.add(sign,0,4);
     		gridPane.add(inputName1,0,5);
         	gridPane.add(username,0,6);
@@ -511,6 +512,8 @@ public class View {
         	gridPane.add(player1MarkerField,1,6);
         	gridPane.add(player2Marker,1,7);
         	gridPane.add(player2MarkerField,1,8);
+        	gridPane.add(emojiClick,2,8);
+//        	gridPane.add(emojiClick,2,6);
         	gridPane.add(timer, 0, 10);
 			gridPane.add(timerText, 0, 9);
 			gridPane.add(goBack, 0, 11);
