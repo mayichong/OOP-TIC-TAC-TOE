@@ -20,7 +20,7 @@ public class Players implements Serializable{
     }
     
     public String getMarker() {
-    	return marker + " " + win + " " + lose;
+    	return marker + "    Win: " + win + "     Lose: " + lose;
     }
     
     public void addWin() {

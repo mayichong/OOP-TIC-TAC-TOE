@@ -12,6 +12,7 @@ import java.util.Set;
 public class TTTControllerImpl {
 	UserPlayer myself;
 	UserPlayer other;
+	String data = "";
 	HashMap<String,UserPlayer> hmap = new HashMap<String,UserPlayer>();
 	
     //Adding elements to HashMap
@@ -58,7 +59,7 @@ public class TTTControllerImpl {
             myself = new UserPlayer(username,marker);
             other = new UserPlayer(username,marker);
             compMarker = other.markerChoice(username,marker);
-
+     
         }
     }
 
@@ -183,8 +184,11 @@ public class TTTControllerImpl {
         Iterator iterator = set.iterator();
         while(iterator.hasNext()) {
            Map.Entry mentry = (Map.Entry)iterator.next();
-           System.out.print("key: "+ mentry.getKey() + " & Value: ");
-           System.out.println(((UserPlayer)mentry.getValue()).getMarker());
+//           System.out.print("key: "+ mentry.getKey() + " & Value: ");
+//           System.out.println(((UserPlayer)mentry.getValue()).getMarker());
+           data += mentry.getKey() + "     Marker: " + ((UserPlayer)mentry.getValue()).getMarker() + "\n\n\n";
+           
+           
         }
     }
     
@@ -194,5 +198,9 @@ public class TTTControllerImpl {
     
     public void addLose() {
     	myself.addLose();
+    }
+    
+    public String dataPass() {
+    	return data;
     }
 }

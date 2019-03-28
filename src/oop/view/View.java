@@ -79,12 +79,12 @@ public class View {
 	    Text markerError = new Text("Invalid input. Please enter again!");
 	    
 	    
-	    
 	    Text win1 = new Text("Player1 Won!");
 	    Text winC = new Text("Computer Won!");
 	    Text win2 = new Text("Player2 Won!");
 	    Text draw = new Text("It is a draw!");
 	    Text display = new Text(controller.getGameDisplay());
+	    
 	    Text timeoutError = new Text("Timeout invalid. Please try again!");
 	    TextField defaultVal = new TextField();
         TextField username = new TextField();
@@ -94,7 +94,7 @@ public class View {
         TextField timer = new TextField();
         TextField player1InputLocation = new TextField();
         TextField player2InputLocation = new TextField();
-        Button GameRecord = new Button ("Records");
+        Button GameRecord = new Button ("Record");
         Button markerInputButton = new Button ("Input");
         Button emojiClick = new Button("emoji");
         Button button2 = new Button("Initialize Array");
@@ -107,8 +107,9 @@ public class View {
         Button afterPlayer1 = new Button("Submit");
         Button afterPlayer2 = new Button("Submit");
         Button goBack = new Button("Go Back");
+        Button quit2 = new Button("Quit");
 	public GridPane buildSetupPane() {
-		
+		display.getStyleClass().add("array");
         EventHandler<MouseEvent> quitHandler = new EventHandler<MouseEvent>() {
         	@Override 
         	public void handle(MouseEvent e) { 
@@ -136,7 +137,7 @@ public class View {
          EventHandler<MouseEvent> playAgainHandler = new EventHandler<MouseEvent>() { 
              @Override
              public void handle(MouseEvent e) {
-            	
+            	 display.getStyleClass().add("array");
             	gridPane.getChildren().remove(display);
             	gridPane.getChildren().remove(win1);
             	gridPane.getChildren().remove(playAgain);
@@ -153,7 +154,7 @@ public class View {
           EventHandler<MouseEvent> goBackHandler = new EventHandler<MouseEvent>() { 
               @Override 
               public void handle(MouseEvent e) {
-             	 
+            	  display.getStyleClass().add("array"); 
              	beginning();
               } 
            };
@@ -163,7 +164,7 @@ public class View {
              public void handle(MouseEvent e) {
         		 gridPane.getChildren().remove(markerError);
         		 gridPane.getChildren().remove(timeoutError);
-        		 
+        		 display.getStyleClass().add("array");
         		 if (playerNum.equals("1")) {
         			 if (player1MarkerField.getText().length() == 1 && player1MarkerField.getText().isEmpty() == false && timer.getText().isEmpty() == false && username.getText().isEmpty() == false) {
         				 
@@ -198,7 +199,6 @@ public class View {
         				 playAgainst("2"); 
         			 }
 
-        			 
         		 }         		 
        	 }
          };
@@ -206,40 +206,43 @@ public class View {
          EventHandler<MouseEvent> submitLocation = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
-        		 
+        		 display.getStyleClass().add("array");
         		 gridPane.getChildren().remove(display);
         		 gridPane.getChildren().remove(error);
         		 
         		 playerInputVal = player1InputLocation.getText();
         		 
         		 if (checkValid(playerInputVal) == 1) {
+        			 display.getStyleClass().add("array");
         			 if (controller.checkFullOrNot() == true){
+        				 display.getStyleClass().add("array");
         				Media media = new Media(Paths.get("src/drawSound.Wav").toUri().toString());
     	  				MediaPlayer mediaPlayer = new MediaPlayer(media);
     	  				mediaPlayer.play();
    		  				gridPane.add(display, 0, 1);	
    		  				gridPane.add(draw, 0, 10);
    		  				gridPane.add(playAgain, 0, 11);
-   		  				gridPane.add(quit, 1, 11);
+   		  				gridPane.add(quit2, 0, 11);
    		  				isOver = true;
    		  				startGameComputer("1","2","3");
                          
                      }else if (controller.determineWinner() == 1) {
+                    	 display.getStyleClass().add("array");
                     	 gridPane.getChildren().clear();
                     	 controller.addWin();
-    	  				 
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
-    	  				
+    	  				 gridPane.add(quit2, 0, 12);
     	  				 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
     	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
     	  				 mediaPlayer.play();
     	  				 controller.storePlayerInfo();
     	  				 gridPane.add(playAgain, 0, 11);
-    	  				 gridPane.add(quit, 0, 12);
+    	  				 
     	  				 isOver = true;
     	  				 startGameComputer("1","2","3");
     	  			 }else if (controller.determineWinner() != 1) {
+    	  				display.getStyleClass().add("array");
     	  				 String computer = controller.please();
       		  			 char x = computer.charAt(0);
       		  			 char y = computer.charAt(1);
@@ -250,15 +253,17 @@ public class View {
       		  			 gridPane.add(display, 0, 1); 
       		  			 
       		  			 if (controller.determineWinner()==2) {
+      		  				display.getStyleClass().add("array");
       		  			Media media = new Media(Paths.get("src/loseSound.Wav").toUri().toString());
        	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
        	  				 mediaPlayer.play();
       		  				 gridPane.add(winC, 0, 11);
+      		  				gridPane.add(quit2, 0, 12);
       		  				 gridPane.add(playAgain, 0, 12);
+      		  				controller.addLose();
       		  				 isOver = true;
       		  				 startGameComputer("1","2","3");
       		  			  }
-	
       	  			}
                      
         		 }else {
@@ -273,13 +278,14 @@ public class View {
          EventHandler<MouseEvent> againstPlayerNum1 = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
-        		 
+        		 display.getStyleClass().add("array");
         		 gridPane.getChildren().remove(display);
         		 gridPane.getChildren().remove(error);
         		 
         		 playerInputVal = player1InputLocation.getText();
         		  
         		 if (checkValid(playerInputVal) == 1) {
+        			 display.getStyleClass().add("array");
         			 if (controller.checkFullOrNot() == true){
         				 Media media = new Media(Paths.get("src/drawSound.Wav").toUri().toString());
      	  				MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -287,10 +293,12 @@ public class View {
     		  				gridPane.add(display, 0, 1);	
     		  				gridPane.add(draw, 0, 10);
     		  				gridPane.add(playAgain, 0, 11);
+    		  				gridPane.add(GameRecord, 0, 12);
     		  				isOver = true;
     		  				startGameComputer("1","2","3");
                           
                       }else if (controller.determineWinner() == 1) {
+                    	  display.getStyleClass().add("array");
                     	 gridPane.getChildren().clear();
                     	 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
     	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
@@ -298,10 +306,13 @@ public class View {
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win1, 0, 10);
     	  				 gridPane.add(playAgain, 0, 11);
+    	  				gridPane.add(GameRecord, 0, 12);
+    	  				controller.addWin();
+    	  				controller.storePlayerInfo();
     	  				isOver = true;
  		  				 startGameComputer("1","2","3");
     	  			 }else if (controller.determineWinner() != 1) {
-    	  				 
+    	  				display.getStyleClass().add("array");
    	  				 	 gridPane.add(display, 0, 1);
     	  				 againstPlayerNum2(markerTest);
       	  			}
@@ -310,9 +321,6 @@ public class View {
         			 gridPane.add(display, 0, 1);
         			 gridPane.add(error,0,20);
         		 }
-        		 
-        		 
-
         		 player1InputLocation.clear();
                  
         	 }
@@ -321,7 +329,7 @@ public class View {
          EventHandler<MouseEvent> againstPlayerNum2 = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
-        		 
+        		 display.getStyleClass().add("array");
         		 gridPane.getChildren().remove(display);
         		 gridPane.getChildren().remove(error);
         		 
@@ -333,9 +341,11 @@ public class View {
                     	 Media media = new Media(Paths.get("src/winSound.mp3").toUri().toString());
     	  				 MediaPlayer mediaPlayer = new MediaPlayer(media);
     	  				mediaPlayer.play();
+    	  				controller.storePlayerInfo();
                     	 gridPane.getChildren().clear();
                     	 gridPane.add(display, 0, 1);
     	  				 gridPane.add(win2, 0, 10);
+    	  				controller.addWin();
     	  				 gridPane.add(playAgain, 0, 11);
     	  				 firstTime = false;
     	  				 isOver = true;
@@ -363,13 +373,13 @@ public class View {
        afterPlayer1.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum1);
        afterPlayer2.addEventFilter(MouseEvent.MOUSE_CLICKED, againstPlayerNum2);
        goBack.addEventFilter(MouseEvent.MOUSE_CLICKED, goBackHandler);
-       
+       quit2.addEventFilter(MouseEvent.MOUSE_CLICKED,quitHandler);
 
         return gridPane;
 	}
 
 	public void beginning() {
-		
+		display.getStyleClass().add("array");
 		GridPane gridPane = new GridPane();
 		
 		gridPane.setMinSize(windowWidth, (int) windowHeight/4); 
@@ -408,6 +418,22 @@ public class View {
         gridPane.add(quit,3,4);
         gridPane.add(line, 0, 2, 3, 1); 
         gridPane.add(GameRecord, 0, 15);
+        
+        
+        EventHandler<MouseEvent> gameRecord = new EventHandler<MouseEvent>() { 
+            @Override 
+            public void handle(MouseEvent e) {
+            	
+            	gridPane.getChildren().clear();
+            	
+            	
+            	Text dataSet = new Text(controller.dataPass());
+            	gridPane.add(dataSet, 0, 1);
+            	dataSet.getStyleClass().add("dataset");
+            	gridPane.add(goBack, 0, 11);
+            	}
+         };
+         
         EventHandler<MouseEvent> submitGameType = new EventHandler<MouseEvent>() { 
             @Override 
             public void handle(MouseEvent e) {
@@ -426,11 +452,12 @@ public class View {
             } 
          };
          button1.addEventFilter(MouseEvent.MOUSE_CLICKED, submitGameType);
+         GameRecord.addEventFilter(MouseEvent.MOUSE_CLICKED,gameRecord);
          root.setCenter(gridPane);
 	}
 	
 	public void playAgainst(String num) {
-
+		display.getStyleClass().add("array");
 		GridPane gridPane = new GridPane(); 
         
 		gridPane.setMinSize(windowWidth, (int) windowHeight/4); 
@@ -458,10 +485,7 @@ public class View {
     			gridPane.getChildren().remove(emojiClick);
                 gridPane.getChildren().remove(player1MarkerField);
                 gridPane.add(markerInputButton,2,5);
- 
-                	
-                	
-                	
+ 	
                 } 
     		};
     		EventHandler<MouseEvent> inputButton = new EventHandler<MouseEvent>() {
@@ -497,23 +521,19 @@ public class View {
 
 	
 	public int checkValid(String location) {
-		
+		display.getStyleClass().add("array");
 		splited = playerInputVal.split("\\s+");
 		
 		if (splited.length == 2) {
 		
 			
 			try{
-                int firstVal = Integer.parseInt(splited[0]);
-                int secondVal = Integer.parseInt(splited[1]);
-                
-            
-			
 			
 			if (controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),1) == true){
 				
 				controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),1);
 	  			  display = new Text(controller.getGameDisplay());
+	  			  
 	  			 return 1;
 				
 	  			
@@ -533,7 +553,7 @@ public class View {
 	}
 	
 	public int checkValid2(String location) {
-		
+		display.getStyleClass().add("array");
 		GridPane gridPane = new GridPane();  
 		splited = playerInputVal.split("\\s+");
 		
@@ -541,8 +561,6 @@ public class View {
 			
 		
 			try{
-                int firstVal = Integer.parseInt(splited[0]);
-                int secondVal = Integer.parseInt(splited[1]);
                 
 			if (controller.setSelection(Integer.parseInt(splited[0]),Integer.parseInt(splited[1]),2) == true){
 				  gridPane.add(insertSuccess, 0, 0);
@@ -566,7 +584,7 @@ public class View {
 	
 	public void startGameComputer(String username, String marker, String timer) {
 		GridPane gridPane = new GridPane();
-		
+		display.getStyleClass().add("array");
 		
 		if (firstTime == true) {
 			controller.startNewGame(1, Integer.parseInt(timer));
@@ -593,7 +611,7 @@ public class View {
 		
 	}
 	public void startGamePlayer(String player1, String player2, String marker1, String marker2, String timer) {
-		
+		display.getStyleClass().add("array");
 		if (firstTime == true) {
 			controller.startNewGame(2, Integer.parseInt(timer));
 			}
@@ -615,6 +633,7 @@ public class View {
 	}
 	
 	public void againstPlayerNum2 (String markerTest) {
+		display.getStyleClass().add("array");
 		GridPane gridPane = new GridPane();	
 		gridPane.setMinSize(windowWidth, (int) windowHeight/4); 
         gridPane.setPadding(new Insets(10, 10, 10, 10)); 
