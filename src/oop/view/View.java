@@ -14,7 +14,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import oop.controller.TTTControllerImpl;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +29,7 @@ import java.nio.file.Paths;
 import java.util.InputMismatchException;
 import javafx.scene.media.*;
 public class View {
+	public static Timeline timeSet;
 	boolean markerInputFormat = true;
 	int timerVal;
 	int x;
@@ -162,6 +166,24 @@ public class View {
          EventHandler<MouseEvent> submitInfo = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
+        		 
+        				 System.out.println(timeout);
+
+        		timeSet = new Timeline(new KeyFrame(Duration.millis(5*1000),a->{
+       			 String computer = controller.please();
+ 		  			 char x = computer.charAt(0);
+ 		  			 char y = computer.charAt(1);
+ 		  			 int xNum = x - '0';
+ 		  			 int yNum = y- '0';
+ 		  			 controller.setSelection(xNum,yNum,2);
+ 		  			 display = new Text (controller.getGameDisplay());
+ 		  			 
+ 		  			 x++;
+ 
+       		 }));
+       		 
+    			timeSet.play();
+        		
         		 gridPane.getChildren().remove(markerError);
         		 gridPane.getChildren().remove(timeoutError);
         		 display.getStyleClass().add("array");
@@ -199,13 +221,19 @@ public class View {
         				 playAgainst("2"); 
         			 }
 
-        		 }         		 
+        		 }
+        		 
+        		 //timeSet.stop();
+        		 //}));
+        		 //timeSet.play();
        	 }
          };
          
          EventHandler<MouseEvent> submitLocation = new EventHandler<MouseEvent>() {
         	 @Override 
              public void handle(MouseEvent e) {
+        		 
+        		 timeSet.play();
         		 display.getStyleClass().add("array");
         		 gridPane.getChildren().remove(display);
         		 gridPane.getChildren().remove(error);
@@ -379,6 +407,7 @@ public class View {
 	}
 
 	public void beginning() {
+		System.out.println("A!");
 		display.getStyleClass().add("array");
 		GridPane gridPane = new GridPane();
 		
@@ -588,28 +617,34 @@ public class View {
 	public void startGameComputer(String username, String marker, String timer) {
 		GridPane gridPane = new GridPane();
 		display.getStyleClass().add("array");
-		
+		timeout = Integer.parseInt(timer);
 		if (firstTime == true) {
 			controller.startNewGame(1, Integer.parseInt(timer));
+			
 			}
-		
-			gridPane.setMinSize(windowWidth, (int) windowHeight/4); 
-	        gridPane.setPadding(new Insets(10, 10, 10, 10)); 
-	        gridPane.setVgap(5); 
-	        gridPane.setHgap(5); 
-	        controller.createPlayer(username,marker, 1);
-			
-			gridPane.add(player1Move, 0, 4);
-			gridPane.add(playerInput, 0, 6);
-			gridPane.add(quit, 1, 6);
-			gridPane.add(player1InputLocation, 0, 8);
-			gridPane.add(afterLocation, 0, 12);
-			this.root.setCenter(gridPane);
 			
 			
-			if (isOver == true) {
-				gridPane.getChildren().clear();
-			}
+				gridPane.setMinSize(windowWidth, (int) windowHeight/4); 
+		        gridPane.setPadding(new Insets(10, 10, 10, 10)); 
+		        gridPane.setVgap(5); 
+		        gridPane.setHgap(5); 
+		        controller.createPlayer(username,marker, 1);
+				
+		       
+				gridPane.add(player1Move, 0, 4);
+				gridPane.add(playerInput, 0, 6);
+				gridPane.add(quit, 1, 6);
+				gridPane.add(player1InputLocation, 0, 8);
+				gridPane.add(afterLocation, 0, 12);
+				this.root.setCenter(gridPane);
+				
+				
+				if (isOver == true) {
+					gridPane.getChildren().clear();
+				}
+				
+			
+			
 		
 		
 	}

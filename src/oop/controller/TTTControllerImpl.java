@@ -184,8 +184,8 @@ public class TTTControllerImpl {
         Iterator iterator = set.iterator();
         while(iterator.hasNext()) {
            Map.Entry mentry = (Map.Entry)iterator.next();
-//           System.out.print("key: "+ mentry.getKey() + " & Value: ");
-//           System.out.println(((UserPlayer)mentry.getValue()).getMarker());
+           System.out.print("key: "+ mentry.getKey() + " & Value: ");
+           System.out.println(((UserPlayer)mentry.getValue()).getMarker());
            data += mentry.getKey() + "     Marker: " + ((UserPlayer)mentry.getValue()).getMarker() + "\n\n\n";
            
            
